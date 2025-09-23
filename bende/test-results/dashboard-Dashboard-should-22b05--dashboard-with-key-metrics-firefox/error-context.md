@@ -1,0 +1,82 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - heading "Webshop CRM" [level=1] [ref=e7]
+    - navigation [ref=e8]:
+      - link "Dashboard" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - img [ref=e10] [cursor=pointer]
+        - text: Dashboard
+      - link "Klanten" [ref=e13] [cursor=pointer]:
+        - /url: /customers
+        - img [ref=e14] [cursor=pointer]
+        - text: Klanten
+      - link "Bestellingen" [ref=e19] [cursor=pointer]:
+        - /url: /orders
+        - img [ref=e20] [cursor=pointer]
+        - text: Bestellingen
+      - link "Producten" [ref=e24] [cursor=pointer]:
+        - /url: /products
+        - img [ref=e25] [cursor=pointer]
+        - text: Producten
+      - link "Analytics & Winst" [ref=e30] [cursor=pointer]:
+        - /url: /analytics
+        - img [ref=e31] [cursor=pointer]
+        - text: Analytics & Winst
+      - link "Geografische Kaart" [ref=e36] [cursor=pointer]:
+        - /url: /geographic-map
+        - img [ref=e37] [cursor=pointer]
+        - text: Geografische Kaart
+      - link "Marketing" [ref=e40] [cursor=pointer]:
+        - /url: /advertising
+        - img [ref=e41] [cursor=pointer]
+        - text: Marketing
+      - link "Financiën" [ref=e45] [cursor=pointer]:
+        - /url: /costs
+        - img [ref=e46] [cursor=pointer]
+        - text: Financiën
+      - link "Verzending" [ref=e49] [cursor=pointer]:
+        - /url: /shipping-tax
+        - img [ref=e50] [cursor=pointer]
+        - text: Verzending
+      - link "Advanced" [ref=e56] [cursor=pointer]:
+        - /url: /ai-insights
+        - img [ref=e57] [cursor=pointer]
+        - text: Advanced
+      - link "API Instellingen" [ref=e66] [cursor=pointer]:
+        - /url: /api-settings
+        - img [ref=e67] [cursor=pointer]
+        - text: API Instellingen
+    - button "Instellingen" [ref=e71] [cursor=pointer]:
+      - img [ref=e72] [cursor=pointer]
+      - text: Instellingen
+  - generic [ref=e75]:
+    - banner [ref=e76]:
+      - generic [ref=e77]:
+        - generic [ref=e78]:
+          - heading "Dashboard" [level=1] [ref=e79]
+          - button "Fashion Store Demo fashion-demo.nl" [ref=e81] [cursor=pointer]:
+            - generic [ref=e82] [cursor=pointer]:
+              - img [ref=e83] [cursor=pointer]
+              - generic [ref=e85] [cursor=pointer]:
+                - paragraph [ref=e86] [cursor=pointer]: Fashion Store Demo
+                - paragraph [ref=e87] [cursor=pointer]: fashion-demo.nl
+            - img [ref=e88] [cursor=pointer]
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - generic:
+              - img
+            - textbox "Zoeken..." [ref=e92]
+          - button [ref=e93] [cursor=pointer]:
+            - img [ref=e94] [cursor=pointer]
+          - generic [ref=e97]:
+            - img [ref=e99]
+            - generic [ref=e102]:
+              - generic [ref=e103]: Admin
+              - generic [ref=e104]: Beheerder
+            - button "Uitloggen" [ref=e105] [cursor=pointer]:
+              - img [ref=e106] [cursor=pointer]
+    - main [ref=e110]
+```

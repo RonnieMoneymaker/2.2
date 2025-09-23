@@ -1,0 +1,399 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - heading "Webshop CRM" [level=1] [ref=e7]
+    - navigation [ref=e8]:
+      - link "Dashboard" [ref=e9]:
+        - /url: /
+        - img [ref=e10]
+        - text: Dashboard
+      - link "Klanten" [ref=e13]:
+        - /url: /customers
+        - img [ref=e14]
+        - text: Klanten
+      - link "Bestellingen" [ref=e19]:
+        - /url: /orders
+        - img [ref=e20]
+        - text: Bestellingen
+      - link "Producten" [ref=e23]:
+        - /url: /products
+        - img [ref=e24]
+        - text: Producten
+      - link "Analytics & Winst" [ref=e28]:
+        - /url: /analytics
+        - img [ref=e29]
+        - text: Analytics & Winst
+      - link "Geografische Kaart" [ref=e31]:
+        - /url: /geographic-map
+        - img [ref=e32]
+        - text: Geografische Kaart
+      - link "Marketing" [ref=e35]:
+        - /url: /advertising
+        - img [ref=e36]
+        - text: Marketing
+      - link "Financiën" [ref=e40]:
+        - /url: /costs
+        - img [ref=e41]
+        - text: Financiën
+      - link "Verzending" [ref=e43]:
+        - /url: /shipping-tax
+        - img [ref=e44]
+        - text: Verzending
+      - link "Advanced" [ref=e49]:
+        - /url: /ai-insights
+        - img [ref=e50]
+        - text: Advanced
+      - link "API Instellingen" [ref=e58]:
+        - /url: /api-settings
+        - img [ref=e59]
+        - text: API Instellingen
+    - button "Instellingen" [ref=e63] [cursor=pointer]:
+      - img [ref=e64] [cursor=pointer]
+      - text: Instellingen
+  - generic [ref=e67]:
+    - banner [ref=e68]:
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - heading "Dashboard" [level=1] [ref=e71]
+          - button "Fashion Store Demo fashion-demo.nl" [ref=e73] [cursor=pointer]:
+            - generic [ref=e74] [cursor=pointer]:
+              - img [ref=e75] [cursor=pointer]
+              - generic [ref=e77] [cursor=pointer]:
+                - paragraph [ref=e78] [cursor=pointer]: Fashion Store Demo
+                - paragraph [ref=e79] [cursor=pointer]: fashion-demo.nl
+            - img [ref=e80] [cursor=pointer]
+        - generic [ref=e82]:
+          - generic [ref=e83]:
+            - generic:
+              - img
+            - textbox "Zoeken..." [ref=e84]
+          - button [ref=e85] [cursor=pointer]:
+            - img [ref=e86] [cursor=pointer]
+          - generic [ref=e89]:
+            - img [ref=e91]
+            - generic [ref=e94]:
+              - generic [ref=e95]: Admin
+              - generic [ref=e96]: Beheerder
+            - button "Uitloggen" [ref=e97] [cursor=pointer]:
+              - img [ref=e98] [cursor=pointer]
+    - main [ref=e101]:
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - generic [ref=e105]:
+            - heading "Dashboard" [level=1] [ref=e106]
+            - paragraph [ref=e107]: Overzicht van vandaag
+          - generic [ref=e108]:
+            - generic [ref=e109]: "Periode:"
+            - combobox [ref=e110]:
+              - option "📅 Vandaag" [selected]
+              - option "⏮️ Gister"
+              - option "📊 Afgelopen week"
+              - option "📈 Afgelopen maand"
+              - option "📊 Afgelopen kwartaal"
+              - option "🗓️ Afgelopen jaar"
+              - option "🏛️ Afgelopen decennium"
+        - generic [ref=e111]:
+          - generic [ref=e113]:
+            - img [ref=e115]
+            - generic [ref=e118]:
+              - paragraph [ref=e119]: Live Bezoekers
+              - generic [ref=e120]:
+                - paragraph [ref=e121]: "33"
+                - generic [ref=e124]: LIVE
+          - generic [ref=e126]:
+            - img [ref=e128]
+            - generic [ref=e130]:
+              - paragraph [ref=e131]: Pagina Views (Vandaag)
+              - paragraph [ref=e132]: "73"
+        - generic [ref=e133]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - img [ref=e139]
+              - generic [ref=e145]:
+                - term [ref=e146]: Klanten Vandaag
+                - definition [ref=e147]: "17"
+            - generic [ref=e148]:
+              - generic [ref=e149]: Vandaag geregistreerd
+              - generic [ref=e150]: ten opzichte van vorige maand
+          - generic [ref=e152]:
+            - generic [ref=e153]:
+              - img [ref=e156]
+              - generic [ref=e160]:
+                - term [ref=e161]: Bestellingen Vandaag
+                - definition [ref=e162]: "5"
+            - generic [ref=e163]:
+              - generic [ref=e164]: Vandaag geplaatst
+              - generic [ref=e165]: ten opzichte van vorige maand
+          - generic [ref=e167]:
+            - generic [ref=e168]:
+              - img [ref=e171]
+              - generic [ref=e174]:
+                - term [ref=e175]: Omzet Vandaag
+                - definition [ref=e176]: €589.94
+            - generic [ref=e177]:
+              - generic [ref=e178]: "Echte winst: €206.48"
+              - generic [ref=e179]: ten opzichte van vorige maand
+          - generic [ref=e181]:
+            - generic [ref=e182]:
+              - img [ref=e185]
+              - generic [ref=e189]:
+                - term [ref=e190]: Netto Winst Vandaag
+                - definition [ref=e191]: €-187.52
+            - generic [ref=e192]:
+              - generic [ref=e193]: Na alle kosten (vandaag)
+              - generic [ref=e194]: ten opzichte van vorige maand
+        - generic [ref=e195]:
+          - generic [ref=e196]:
+            - heading "📊 Periode Vergelijking - Vandaag" [level=3] [ref=e197]
+            - generic [ref=e198]: vs Vorige periode
+          - generic [ref=e199]:
+            - generic [ref=e200]:
+              - generic [ref=e201]: € 589,94
+              - paragraph [ref=e202]: Omzet (Excl. BTW)
+              - paragraph [ref=e203]: +12.5% vs vorige periode
+            - generic [ref=e204]:
+              - generic [ref=e205]: € 123,89
+              - paragraph [ref=e206]: BTW Ontvangen
+              - paragraph [ref=e207]: 21% van omzet
+            - generic [ref=e208]:
+              - generic [ref=e209]: € 206,48
+              - paragraph [ref=e210]: Bruto Winst
+              - paragraph [ref=e211]: 35% marge
+            - generic [ref=e212]:
+              - generic [ref=e213]: € -12.448,27
+              - paragraph [ref=e214]: Netto Winst
+              - paragraph [ref=e215]: Na alle kosten
+          - generic [ref=e216]:
+            - generic [ref=e217]:
+              - heading "📈 OMZET VERGELIJKING:" [level=4] [ref=e218]
+              - generic [ref=e219]:
+                - generic [ref=e220]:
+                  - generic [ref=e221]: "Huidige periode:"
+                  - generic [ref=e222]: € 589,94
+                - generic [ref=e223]:
+                  - generic [ref=e224]: "Vorige periode:"
+                  - generic [ref=e225]: € 519,15
+                - generic [ref=e226]:
+                  - generic [ref=e227]: "Verschil:"
+                  - generic [ref=e228]: +€ 70,79 (+12.5%)
+            - generic [ref=e229]:
+              - heading "💰 WINST VERGELIJKING:" [level=4] [ref=e230]
+              - generic [ref=e231]:
+                - generic [ref=e232]:
+                  - generic [ref=e233]: "Huidige winst:"
+                  - generic [ref=e234]: € -12.448,27
+                - generic [ref=e235]:
+                  - generic [ref=e236]: "Vorige winst:"
+                  - generic [ref=e237]: € -12.469,48
+                - generic [ref=e238]:
+                  - generic [ref=e239]: "Winst groei:"
+                  - generic [ref=e240]: +€ 21,21 (+18.2%)
+        - generic [ref=e241]:
+          - heading "💰 Complete Financiële Breakdown - Vandaag" [level=3] [ref=e242]:
+            - img [ref=e243]
+            - text: 💰 Complete Financiële Breakdown - Vandaag
+          - generic [ref=e246]:
+            - heading "📈 INKOMSTEN" [level=4] [ref=e247]
+            - generic [ref=e248]:
+              - generic [ref=e249]:
+                - generic [ref=e250]: +€590
+                - paragraph [ref=e251]: Totale Omzet
+                - paragraph [ref=e252]: Excl. BTW
+              - generic [ref=e253]:
+                - generic [ref=e254]: +€124
+                - paragraph [ref=e255]: BTW Ontvangen
+                - paragraph [ref=e256]: (21% van omzet)
+          - generic [ref=e257]:
+            - heading "📉 KOSTEN" [level=4] [ref=e258]
+            - generic [ref=e259]:
+              - generic [ref=e260]:
+                - generic [ref=e261]: "-€383"
+                - paragraph [ref=e262]: Inkoopkosten
+                - paragraph [ref=e263]: (65% van omzet)
+              - generic [ref=e264]:
+                - generic [ref=e265]: "-€30"
+                - paragraph [ref=e266]: Verzendkosten
+                - paragraph [ref=e267]: (€5.95 × 5 orders)
+              - generic [ref=e268]:
+                - generic [ref=e269]: "-€26"
+                - paragraph [ref=e270]: Marketing Kosten
+                - paragraph [ref=e271]: (Google + Meta Ads)
+              - generic [ref=e272]:
+                - generic [ref=e273]: "-€394"
+                - paragraph [ref=e274]: Vaste Kosten
+                - paragraph [ref=e275]: (Huur, salaris, etc.)
+          - generic [ref=e276]:
+            - heading "💎 NETTO WINST BEREKENING" [level=4] [ref=e277]
+            - generic [ref=e279]:
+              - generic [ref=e280]:
+                - generic [ref=e281]: "Totale Omzet (excl. BTW):"
+                - generic [ref=e282]: +€589.94
+              - generic [ref=e283]:
+                - generic [ref=e284]: "Inkoopkosten:"
+                - generic [ref=e285]: "-€383.46"
+              - generic [ref=e286]:
+                - generic [ref=e287]: "Verzendkosten:"
+                - generic [ref=e288]: "-€29.75"
+              - generic [ref=e289]:
+                - generic [ref=e290]: "Marketing kosten:"
+                - generic [ref=e291]: "-€26.00"
+              - generic [ref=e292]:
+                - generic [ref=e293]: "Vaste kosten:"
+                - generic [ref=e294]: "-€394.00"
+              - separator [ref=e295]
+              - generic [ref=e296]:
+                - generic [ref=e297]: "NETTO WINST:"
+                - generic [ref=e298]: €-12448.27
+          - generic [ref=e299]:
+            - heading "🧾 BTW OVERZICHT" [level=4] [ref=e300]
+            - generic [ref=e301]:
+              - generic [ref=e302]:
+                - generic [ref=e303]: +€124
+                - paragraph [ref=e304]: BTW Ontvangen
+                - paragraph [ref=e305]: (21% van klanten)
+              - generic [ref=e306]:
+                - generic [ref=e307]: "-€251"
+                - paragraph [ref=e308]: BTW Betaald
+                - paragraph [ref=e309]: (21% van kosten)
+              - generic [ref=e310]:
+                - generic [ref=e311]: +€-127
+                - paragraph [ref=e312]: BTW Saldo
+                - paragraph [ref=e313]: (Naar belastingdienst)
+        - generic [ref=e314]:
+          - heading "📢 Marketing Kosten Breakdown - Vandaag" [level=3] [ref=e315]:
+            - img [ref=e316]
+            - text: 📢 Marketing Kosten Breakdown - Vandaag
+          - generic [ref=e320]:
+            - generic [ref=e321]:
+              - generic [ref=e322]: "-€15"
+              - paragraph [ref=e323]: Google Ads
+              - paragraph [ref=e324]: Search + Shopping campagnes
+            - generic [ref=e325]:
+              - generic [ref=e326]: "-€11"
+              - paragraph [ref=e327]: Meta Ads
+              - paragraph [ref=e328]: Facebook + Instagram
+            - generic [ref=e329]:
+              - generic [ref=e330]: "-€26"
+              - paragraph [ref=e331]: Totaal Marketing
+              - paragraph [ref=e332]: Alle advertising kanalen
+          - generic [ref=e334]:
+            - generic [ref=e335]:
+              - paragraph [ref=e336]: ROAS (Return on Ad Spend)
+              - paragraph [ref=e337]: 22.7x
+              - paragraph [ref=e338]: €22.69 omzet per €1 advertising
+            - generic [ref=e339]:
+              - paragraph [ref=e340]: Marketing % van Omzet
+              - paragraph [ref=e341]: 4.4%
+              - paragraph [ref=e342]: "Gezonde range: 10-15%"
+            - generic [ref=e343]:
+              - paragraph [ref=e344]: Cost per Acquisition
+              - paragraph [ref=e345]: €26
+              - paragraph [ref=e346]: Per nieuwe klant
+        - generic [ref=e347]:
+          - heading "💎 Winst per Product (geschat)" [level=3] [ref=e348]
+          - generic [ref=e349]:
+            - generic [ref=e350]:
+              - generic [ref=e351]: Premium T-Shirt
+              - generic [ref=e352]: +€609.30
+            - generic [ref=e353]:
+              - generic [ref=e354]: Jeans Classic Fit
+              - generic [ref=e355]: +€1.601.28
+            - generic [ref=e356]:
+              - generic [ref=e357]: Sneakers Sport
+              - generic [ref=e358]: +€864.72
+            - generic [ref=e359]:
+              - generic [ref=e360]: Hoodie Deluxe
+              - generic [ref=e361]: +€708.12
+        - generic [ref=e362]:
+          - heading "📈 Verkopen Trend - Vandaag" [level=3] [ref=e364]
+          - heading "Status Verdeling" [level=3] [ref=e367]
+        - generic [ref=e369]:
+          - generic [ref=e370]:
+            - heading "Top Klanten (naar winst)" [level=3] [ref=e372]
+            - generic [ref=e373]:
+              - generic [ref=e374] [cursor=pointer]:
+                - generic [ref=e375] [cursor=pointer]:
+                  - paragraph [ref=e376] [cursor=pointer]: Marco van Berg →
+                  - paragraph [ref=e377] [cursor=pointer]: marco.van.berg@email.com
+                - generic [ref=e378] [cursor=pointer]:
+                  - paragraph [ref=e379] [cursor=pointer]: €789.94 omzet
+                  - paragraph [ref=e380] [cursor=pointer]: +€240.78 winst
+                  - paragraph [ref=e381] [cursor=pointer]: 6 bestellingen
+              - generic [ref=e382] [cursor=pointer]:
+                - generic [ref=e383] [cursor=pointer]:
+                  - paragraph [ref=e384] [cursor=pointer]: Piet Bakker →
+                  - paragraph [ref=e385] [cursor=pointer]: piet.bakker@email.com
+                - generic [ref=e386] [cursor=pointer]:
+                  - paragraph [ref=e387] [cursor=pointer]: €599.95 omzet
+                  - paragraph [ref=e388] [cursor=pointer]: +€180.23 winst
+                  - paragraph [ref=e389] [cursor=pointer]: 5 bestellingen
+              - generic [ref=e390] [cursor=pointer]:
+                - generic [ref=e391] [cursor=pointer]:
+                  - paragraph [ref=e392] [cursor=pointer]: Lisa de Jong →
+                  - paragraph [ref=e393] [cursor=pointer]: lisa.de.jong@email.com
+                - generic [ref=e394] [cursor=pointer]:
+                  - paragraph [ref=e395] [cursor=pointer]: €445.96 omzet
+                  - paragraph [ref=e396] [cursor=pointer]: +€132.29 winst
+                  - paragraph [ref=e397] [cursor=pointer]: 4 bestellingen
+              - generic [ref=e398] [cursor=pointer]:
+                - generic [ref=e399] [cursor=pointer]:
+                  - paragraph [ref=e400] [cursor=pointer]: Sara Meijer →
+                  - paragraph [ref=e401] [cursor=pointer]: sara.meijer@email.com
+                - generic [ref=e402] [cursor=pointer]:
+                  - paragraph [ref=e403] [cursor=pointer]: €359.96 omzet
+                  - paragraph [ref=e404] [cursor=pointer]: +€102.19 winst
+                  - paragraph [ref=e405] [cursor=pointer]: 4 bestellingen
+              - generic [ref=e406] [cursor=pointer]:
+                - generic [ref=e407] [cursor=pointer]:
+                  - paragraph [ref=e408] [cursor=pointer]: Jan de Vries →
+                  - paragraph [ref=e409] [cursor=pointer]: jan.de.vries@email.com
+                - generic [ref=e410] [cursor=pointer]:
+                  - paragraph [ref=e411] [cursor=pointer]: €299.97 omzet
+                  - paragraph [ref=e412] [cursor=pointer]: +€87.14 winst
+                  - paragraph [ref=e413] [cursor=pointer]: 3 bestellingen
+          - generic [ref=e414]:
+            - heading "Recente Bestellingen" [level=3] [ref=e416]
+            - generic [ref=e417]:
+              - generic [ref=e418] [cursor=pointer]:
+                - generic [ref=e419] [cursor=pointer]:
+                  - paragraph [ref=e420] [cursor=pointer]: ORD-2024-001 →
+                  - paragraph [ref=e421] [cursor=pointer]: Jan de Vries
+                - generic [ref=e422] [cursor=pointer]:
+                  - paragraph [ref=e423] [cursor=pointer]: €99.99 omzet
+                  - paragraph [ref=e424] [cursor=pointer]: +€29.05 winst
+                  - generic [ref=e425] [cursor=pointer]: delivered
+              - generic [ref=e426] [cursor=pointer]:
+                - generic [ref=e427] [cursor=pointer]:
+                  - paragraph [ref=e428] [cursor=pointer]: ORD-2024-002 →
+                  - paragraph [ref=e429] [cursor=pointer]: Jan de Vries
+                - generic [ref=e430] [cursor=pointer]:
+                  - paragraph [ref=e431] [cursor=pointer]: €149.98 omzet
+                  - paragraph [ref=e432] [cursor=pointer]: +€46.54 winst
+                  - generic [ref=e433] [cursor=pointer]: delivered
+              - generic [ref=e434] [cursor=pointer]:
+                - generic [ref=e435] [cursor=pointer]:
+                  - paragraph [ref=e436] [cursor=pointer]: ORD-2024-003 →
+                  - paragraph [ref=e437] [cursor=pointer]: Jan de Vries
+                - generic [ref=e438] [cursor=pointer]:
+                  - paragraph [ref=e439] [cursor=pointer]: €49.99 omzet
+                  - paragraph [ref=e440] [cursor=pointer]: +€11.55 winst
+                  - generic [ref=e441] [cursor=pointer]: processing
+              - generic [ref=e442] [cursor=pointer]:
+                - generic [ref=e443] [cursor=pointer]:
+                  - paragraph [ref=e444] [cursor=pointer]: ORD-2024-004 →
+                  - paragraph [ref=e445] [cursor=pointer]: Maria Jansen
+                - generic [ref=e446] [cursor=pointer]:
+                  - paragraph [ref=e447] [cursor=pointer]: €89.99 omzet
+                  - paragraph [ref=e448] [cursor=pointer]: +€25.55 winst
+                  - generic [ref=e449] [cursor=pointer]: delivered
+              - generic [ref=e450] [cursor=pointer]:
+                - generic [ref=e451] [cursor=pointer]:
+                  - paragraph [ref=e452] [cursor=pointer]: ORD-2024-005 →
+                  - paragraph [ref=e453] [cursor=pointer]: Piet Bakker
+                - generic [ref=e454] [cursor=pointer]:
+                  - paragraph [ref=e455] [cursor=pointer]: €199.99 omzet
+                  - paragraph [ref=e456] [cursor=pointer]: +€64.05 winst
+                  - generic [ref=e457] [cursor=pointer]: shipped
+```
