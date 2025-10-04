@@ -1,0 +1,97 @@
+import { Router } from 'express';
+import { PrismaClient } from '../../generated/prisma/index.js';
+
+const prisma = new PrismaClient();
+const router = Router();
+
+// List products (with pagination and optional search)
+router.get('/', async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const page = parseInt(req.query.page ?? '1', 10);
+    const limit = Math.min(parseInt(req.query.limit ?? '20', 10), 100);
+    const search = (req.query.search ?? '').toString().trim();
+    const skip = (page - 1) * limit;
+
+    const where = {
+      websiteId,
+      isActive: true,
+      ...(search ? { OR: [
+        { name: { contains: search, mode: 'insensitive' }},
+        { slug: { contains: search, mode: 'insensitive' }},
+        { sku: { contains: search, mode: 'insensitive' }},
+      ] } : {})
+    };
+
+    const [items, total] = await Promise.all([
+      prisma.product.findMany({ where, orderBy: { name: 'asc' }, skip, take: limit }),
+      prisma.product.count({ where })
+    ]);
+
+    res.json({
+      products: items,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) }
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Create product
+router.post('/', async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const { name, slug, sku, description, priceCents, currency, stockQuantity, categoryId, images } = req.body;
+    const product = await prisma.product.create({
+      data: {
+        websiteId,
+        name,
+        slug,
+        sku,
+        description,
+        priceCents: priceCents ?? 0,
+        currency: currency ?? 'EUR',
+        stockQuantity: stockQuantity ?? 0,
+        categoryId: categoryId ?? null,
+        images: images ?? null
+      }
+    });
+    res.status(201).json({ product });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Update product
+router.put('/:id', async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const id = parseInt(req.params.id, 10);
+    const data = req.body;
+    // Ensure record belongs to this website
+    const exists = await prisma.product.findFirst({ where: { id, websiteId } });
+    if (!exists) return res.status(404).json({ error: 'Product niet gevonden' });
+    const product = await prisma.product.update({ where: { id }, data });
+    res.json({ product });
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Soft delete
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const id = parseInt(req.params.id, 10);
+    const exists = await prisma.product.findFirst({ where: { id, websiteId } });
+    if (!exists) return res.status(404).json({ error: 'Product niet gevonden' });
+    const product = await prisma.product.update({ where: { id }, data: { isActive: false } });
+    res.json({ product });
+  } catch (e) {
+    next(e);
+  }
+});
+
+export default router;
+
+
