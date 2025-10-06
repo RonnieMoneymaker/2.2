@@ -10,3 +10,481 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
+
+model Website {
+  id           Int           @id @default(autoincrement())
+  name         String
+  domain       String        @unique
+  apiKey       String        @unique
+  isActive     Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  categories   Category[]
+  products     Product[]
+  customers    Customer[]
+  orders       Order[]
+  integrations Integration[]
+}
+
+model Category {
+  id         Int        @id @default(autoincrement())
+  websiteId  Int
+  name       String
+  slug       String
+  parentId   Int?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  website    Website    @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  parent     Category?  @relation("CategoryParent", fields: [parentId], references: [id], onDelete: SetNull)
+  children   Category[] @relation("CategoryParent")
+  products   Product[]
+
+  @@unique([websiteId, slug])
+}
+
+model Product {
+  id                Int              @id @default(autoincrement())
+  websiteId         Int
+  categoryId        Int?
+  name              String
+  slug              String
+  sku               String?
+  description       String?
+  shortDescription  String?
+  priceCents        Int              @default(0)
+  comparePriceCents Int?             // Was price for discounts
+  costCents         Int?             // Cost price for profit calculation
+  currency          String           @default("EUR")
+  stockQuantity     Int              @default(0)
+  lowStockThreshold Int              @default(5)
+  weight            Float?           // For shipping calculation
+  isActive          Boolean          @default(true)
+  isFeatured        Boolean          @default(false)
+  images            String?          // JSON array of image URLs
+  metaTitle         String?
+  metaDescription   String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  website           Website          @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  category          Category?        @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  orderItems        OrderItem[]
+  variants          ProductVariant[]
+  attributes        ProductAttribute[]
+  reviews           Review[]
+
+  @@unique([websiteId, slug])
+  @@unique([websiteId, sku])
+  @@index([websiteId, isActive])
+}
+
+// Product Variants (e.g., size, color combinations)
+model ProductVariant {
+  id            Int      @id @default(autoincrement())
+  productId     Int
+  sku           String
+  name          String   // e.g., "Large / Red"
+  priceCents    Int
+  stockQuantity Int      @default(0)
+  isActive      Boolean  @default(true)
+  attributes    String   // JSON: {"size": "L", "color": "Red"}
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, sku])
+}
+
+// Product Attributes (e.g., Brand, Material)
+model ProductAttribute {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  name      String   // e.g., "Brand", "Material"
+  value     String   // e.g., "Nike", "Cotton"
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+}
+
+model Customer {
+  id                Int       @id @default(autoincrement())
+  websiteId         Int
+  email             String
+  password          String?   // Hashed password for customer portal
+  firstName         String
+  lastName          String
+  phone             String?
+  company           String?
+  address           String?
+  addressLine2      String?
+  city              String?
+  state             String?
+  postalCode        String?
+  country           String?   @default("Nederland")
+  taxNumber         String?   // VAT number for businesses
+  notes             String?   // Internal notes
+  totalSpent        Int       @default(0) // in cents
+  orderCount        Int       @default(0)
+  isActive          Boolean   @default(true)
+  acceptsMarketing  Boolean   @default(false)
+  lastOrderAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  website           Website   @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  orders            Order[]
+  reviews           Review[]
+  addresses         CustomerAddress[]
+
+  @@unique([websiteId, email])
+  @@index([websiteId, email])
+}
+
+// Customer Addresses (for multiple shipping addresses)
+model CustomerAddress {
+  id          Int      @id @default(autoincrement())
+  customerId  Int
+  label       String   // e.g., "Home", "Work"
+  firstName   String
+  lastName    String
+  company     String?
+  address     String
+  addressLine2 String?
+  city        String
+  state       String?
+  postalCode  String
+  country     String
+  phone       String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+}
+
+model Order {
+  id                Int              @id @default(autoincrement())
+  websiteId         Int
+  customerId        Int
+  orderNumber       String
+  status            String           @default("pending") // pending, processing, shipped, delivered, cancelled, refunded
+  paymentStatus     String           @default("unpaid") // unpaid, paid, refunded, partially_refunded
+  paymentMethod     String?          // mollie, stripe, bank_transfer, cash
+  subtotalCents     Int              @default(0)
+  shippingCents     Int              @default(0)
+  taxCents          Int              @default(0)
+  discountCents     Int              @default(0)
+  totalCents        Int              @default(0)
+  currency          String           @default("EUR")
+  customerNote      String?
+  internalNote      String?
+  // Shipping Address
+  shippingFirstName String?
+  shippingLastName  String?
+  shippingCompany   String?
+  shippingAddress   String?
+  shippingCity      String?
+  shippingState     String?
+  shippingPostal    String?
+  shippingCountry   String?
+  shippingPhone     String?
+  // Billing Address
+  billingFirstName  String?
+  billingLastName   String?
+  billingCompany    String?
+  billingAddress    String?
+  billingCity       String?
+  billingState      String?
+  billingPostal     String?
+  billingCountry    String?
+  billingPhone      String?
+  billingEmail      String?
+  // Tracking
+  trackingNumber    String?
+  trackingUrl       String?
+  shippedAt         DateTime?
+  deliveredAt       DateTime?
+  cancelledAt       DateTime?
+  refundedAt        DateTime?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  website           Website          @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  customer          Customer         @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  items             OrderItem[]
+  transactions      PaymentTransaction[]
+  statusHistory     OrderStatusHistory[]
+
+  @@unique([websiteId, orderNumber])
+  @@index([websiteId, status])
+  @@index([websiteId, customerId])
+}
+
+model OrderItem {
+  id            Int     @id @default(autoincrement())
+  orderId       Int
+  productId     Int
+  variantId     Int?    // If product has variants
+  productName   String  // Snapshot of name at time of order
+  productSku    String?
+  quantity      Int     @default(1)
+  unitCents     Int     @default(0)
+  totalCents    Int     @default(0)
+  taxCents      Int     @default(0)
+  discountCents Int     @default(0)
+  order         Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+}
+
+// Order Status History for tracking
+model OrderStatusHistory {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  status    String
+  note      String?
+  createdBy String?  // User who made the change
+  createdAt DateTime @default(now())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+// Payment Transactions
+model PaymentTransaction {
+  id                Int      @id @default(autoincrement())
+  orderId           Int
+  paymentProvider   String   // mollie, stripe, etc
+  transactionId     String   // External transaction ID
+  status            String   // pending, completed, failed, refunded
+  amountCents       Int
+  currency          String   @default("EUR")
+  paymentMethod     String?  // credit_card, ideal, paypal, etc
+  metadata          String?  // JSON with extra data
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  order             Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([paymentProvider, transactionId])
+  @@index([orderId])
+}
+
+// Product Reviews & Ratings
+model Review {
+  id         Int      @id @default(autoincrement())
+  productId  Int
+  customerId Int
+  rating     Int      // 1-5 stars
+  title      String?
+  comment    String?
+  isApproved Boolean  @default(false)
+  isVerifiedPurchase Boolean @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([productId, isApproved])
+  @@index([customerId])
+}
+
+// Discount Codes / Coupons
+model DiscountCode {
+  id              Int      @id @default(autoincrement())
+  websiteId       Int
+  code            String
+  type            String   // percentage, fixed_amount, free_shipping
+  value           Int      // Percentage (1-100) or cents for fixed
+  minOrderCents   Int?     // Minimum order value
+  maxDiscountCents Int?    // Maximum discount amount
+  usageLimit      Int?     // null = unlimited
+  usageCount      Int      @default(0)
+  startsAt        DateTime?
+  expiresAt       DateTime?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([websiteId, code])
+  @@index([websiteId, isActive])
+}
+
+// Shipping Methods
+model ShippingMethod {
+  id          Int            @id @default(autoincrement())
+  websiteId   Int
+  name        String
+  description String?
+  priceCents  Int            // Base shipping cost
+  isFree      Boolean        @default(false)
+  freeAbove   Int?           // Free shipping above this amount
+  minDays     Int?           // Estimated delivery time
+  maxDays     Int?
+  isActive    Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  zones       ShippingZone[]
+
+  @@index([websiteId, isActive])
+}
+
+// Shipping Zones (countries/regions)
+model ShippingZone {
+  id               Int            @id @default(autoincrement())
+  shippingMethodId Int
+  country          String         // Country code (NL, BE, DE, etc)
+  region           String?        // State/province if applicable
+  additionalCents  Int            @default(0) // Extra cost for this zone
+  shippingMethod   ShippingMethod @relation(fields: [shippingMethodId], references: [id], onDelete: Cascade)
+
+  @@index([shippingMethodId])
+}
+
+// Tax Rates per country/region
+model TaxRate {
+  id          Int     @id @default(autoincrement())
+  websiteId   Int
+  country     String  // Country code
+  region      String? // State/province
+  name        String  // e.g., "BTW 21%", "VAT"
+  rate        Float   // 21.0 for 21%
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([websiteId, country])
+}
+
+// Global Settings (database-driven configuration)
+model Setting {
+  id        Int      @id @default(autoincrement())
+  websiteId Int
+  key       String
+  value     String   // JSON or plain text
+  type      String   @default("string") // string, number, boolean, json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([websiteId, key])
+}
+
+// Activity Log (audit trail)
+model ActivityLog {
+  id          Int      @id @default(autoincrement())
+  websiteId   Int
+  userId      Int?     // Admin user ID (if you have user management)
+  action      String   // created, updated, deleted
+  entity      String   // product, order, customer, etc
+  entityId    Int
+  changes     String?  // JSON with before/after values
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([websiteId, entity, entityId])
+  @@index([websiteId, createdAt])
+}
+
+// Notifications (for admin alerts)
+model Notification {
+  id        Int      @id @default(autoincrement())
+  websiteId Int
+  type      String   // order_placed, low_stock, payment_received, etc
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  link      String?  // Deep link to relevant page
+  createdAt DateTime @default(now())
+
+  @@index([websiteId, isRead])
+  @@index([websiteId, createdAt])
+}
+
+// Platform Integrations
+model Integration {
+  id            Int       @id @default(autoincrement())
+  websiteId     Int
+  platform      String    // 'woocommerce', 'shopify', 'crisp', 'mollie', 'stripe', etc
+  name          String
+  isActive      Boolean   @default(true)
+  config        String    // JSON with credentials
+  lastSync      DateTime?
+  syncStatus    String?   @default("idle") // 'idle', 'syncing', 'error', 'success'
+  lastError     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  website       Website   @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  syncLogs      SyncLog[]
+  webhooks      Webhook[]
+
+  @@unique([websiteId, platform, name])
+}
+
+// Sync History
+model SyncLog {
+  id            Int         @id @default(autoincrement())
+  integrationId Int
+  direction     String      // 'import' or 'export'
+  entity        String      // 'products', 'orders', 'customers'
+  status        String      // 'started', 'completed', 'failed'
+  recordsTotal  Int         @default(0)
+  recordsSuccess Int        @default(0)
+  recordsFailed Int         @default(0)
+  errorMessage  String?
+  startedAt     DateTime    @default(now())
+  completedAt   DateTime?
+  integration   Integration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+}
+
+// Webhooks from external platforms
+model Webhook {
+  id            Int         @id @default(autoincrement())
+  integrationId Int?
+  platform      String      // 'woocommerce', 'mollie', 'stripe', etc
+  event         String      // 'order.created', 'payment.paid', etc
+  payload       String      // Full JSON payload
+  processed     Boolean     @default(false)
+  processedAt   DateTime?
+  errorMessage  String?
+  createdAt     DateTime    @default(now())
+  integration   Integration? @relation(fields: [integrationId], references: [id], onDelete: SetNull)
+}
+
+// Live Chat Messages (Crisp)
+model ChatMessage {
+  id         Int      @id @default(autoincrement())
+  websiteId  Int
+  sessionId  String
+  fromUser   Boolean  @default(false) // true if from customer, false if from admin
+  message    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// Email Marketing Campaigns
+model EmailCampaign {
+  id            Int      @id @default(autoincrement())
+  websiteId     Int
+  platform      String   // 'sendgrid', 'mailchimp', 'manual'
+  name          String
+  subject       String
+  content       String
+  status        String   @default("draft") // 'draft', 'scheduled', 'sent', 'failed'
+  recipients    Int      @default(0)
+  opened        Int      @default(0)
+  clicked       Int      @default(0)
+  scheduledFor  DateTime?
+  sentAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// API Rate Limiting
+model ApiUsage {
+  id         Int      @id @default(autoincrement())
+  apiKey     String
+  endpoint   String
+  requests   Int      @default(1)
+  timestamp  DateTime @default(now())
+
+  @@index([apiKey, timestamp])
+}

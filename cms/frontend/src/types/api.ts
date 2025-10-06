@@ -7,7 +7,7 @@ export interface Product {
   priceCents: number;
   currency: string;
   stockQuantity: number;
-  categoryId?: number;
+  categoryId?: number | null;
   images?: string;
   isActive: boolean;
   createdAt: string;
@@ -18,9 +18,49 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  parentId?: number;
+  parentId?: number | null;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Customer {
+  id: number;
+  websiteId: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  country?: string;
+  createdAt: string;
+  updatedAt: string;
+  orders?: Order[];
+}
+
+export interface Order {
+  id: number;
+  websiteId: number;
+  customerId: number;
+  orderNumber: string;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  totalCents: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+  customer?: Customer;
+  items?: OrderItem[];
+}
+
+export interface OrderItem {
+  id: number;
+  orderId: number;
+  productId: number;
+  quantity: number;
+  unitCents: number;
+  totalCents: number;
+  product?: Product;
 }
 
 export interface Stats {
@@ -48,4 +88,3 @@ export interface PaginatedResponse<T> {
     pages: number;
   };
 }
-

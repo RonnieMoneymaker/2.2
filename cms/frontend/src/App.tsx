@@ -4,6 +4,13 @@ import Layout from './components/Layout';
 import Dashboard from './pages/Dashboard';
 import Products from './pages/Products';
 import Categories from './pages/Categories';
+import Customers from './pages/Customers';
+import Orders from './pages/Orders';
+import Settings from './pages/Settings';
+import BulkImport from './pages/BulkImport';
+import Analytics from './pages/Analytics';
+import Integrations from './pages/Integrations';
+import Financial from './pages/Financial';
 
 function App() {
   return (
@@ -13,7 +20,13 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="products" element={<Products />} />
           <Route path="categories" element={<Categories />} />
-          <Route path="settings" element={<div className="text-center py-12 text-gray-500">Instellingen komen binnenkort...</div>} />
+          <Route path="customers" element={<Customers />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="financial" element={<Financial />} />
+          <Route path="analytics" element={<Analytics />} />
+          <Route path="integrations" element={<Integrations />} />
+          <Route path="import" element={<BulkImport />} />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
     </Router>

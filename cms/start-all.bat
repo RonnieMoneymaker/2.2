@@ -12,3 +12,7 @@ echo Both servers starting...
 echo CMS API: http://localhost:2000
 echo React Frontend: http://localhost:2001
 
+
+
+
+

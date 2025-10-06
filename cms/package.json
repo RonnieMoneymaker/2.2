@@ -19,14 +19,23 @@
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.16.3",
+    "@woocommerce/woocommerce-rest-api": "^1.0.1",
+    "axios": "^1.6.2",
     "bcryptjs": "^3.0.2",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
     "express": "^5.1.0",
+    "google-ads-api": "^17.0.0",
+    "googleapis": "^129.0.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.1",
+    "multer": "^2.0.2",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.7",
     "prisma": "^6.16.3",
+    "stripe": "^14.9.0",
     "zod": "^4.1.11"
   },
   "devDependencies": {
