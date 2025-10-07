@@ -26,10 +26,6 @@ import bulkRouter from './routes/bulk.js';
 import notificationsRouter from './routes/notifications.js';
 import searchRouter from './routes/search.js';
 import performanceRouter from './routes/performance.js';
-import adSpendRouter from './routes/adSpend.js';
-import shippingRouter from './routes/shipping.js';
-import paymentRouter from './routes/payment.js';
-import webshopSyncRouter from './routes/webshopSync.js';
 
 const app = express();
 const prisma = new PrismaClient();
@@ -97,10 +93,6 @@ app.use('/api/bulk', bulkRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/performance', performanceRouter);
-app.use('/api/adspend', adSpendRouter);
-app.use('/api/shipping', shippingRouter);
-app.use('/api/payment', paymentRouter);
-app.use('/api/webshop-sync', webshopSyncRouter);
 
 app.use((err, req, res, next) => {
   console.error(err);

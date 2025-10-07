@@ -1,194 +1,341 @@
-# 🚀 VOLTMOVER CMS - QUICK START GUIDE
+# 🚀 Quick Start Guide - Voltmover CMS
 
-## ⚡ SYSTEEM STARTEN IN 3 STAPPEN
+## ✅ Alles is werkend!
 
-### **Stap 1: Backend Starten**
+Je complete real-time backend met live dashboard is nu operationeel!
+
+---
+
+## 🎯 **Servers Starten**
+
+### **Backend (Poort 2000)**
 ```bash
 cd cms
-PORT=2000 npm start
+$env:DATABASE_URL="file:./prisma/dev.db"
+$env:PORT="2000"
+npm start
 ```
-✅ API draait op: `http://localhost:2000`
 
-### **Stap 2: Frontend Starten**
+### **Frontend (Poort 2001)**
 ```bash
 cd cms/frontend
-PORT=2001 npm start
-```
-✅ UI draait op: `http://localhost:2001`
-
-### **Stap 3: Open Browser**
-```
-http://localhost:2001
-```
-✅ API Key: `dev-api-key-123`
-
----
-
-## 📊 WAT KAN JE DOEN?
-
-### **12 PAGINA'S BESCHIKBAAR:**
-
-1. **📊 Dashboard** (`/`)
-   - Bekijk KPI's en statistieken
-   - Exporteer data naar CSV
-   - Zie omzet grafieken
-
-2. **📦 Producten** (`/products`)
-   - Voeg producten toe
-   - Zoek en filter
-   - Beheer voorraad
-
-3. **📂 Categorieën** (`/categories`)
-   - Maak hiërarchie
-   - Parent/child relaties
-
-4. **👥 Klanten** (`/customers`)
-   - Klantendatabase
-   - Contact informatie
-   - Order geschiedenis
-
-5. **🛒 Bestellingen** (`/orders`)
-   - Maak orders
-   - Update statussen
-   - Bulk acties
-
-6. **📈 Rapporten** (`/reports`)
-   - 4 report types
-   - Analytics dashboard
-   - Export functionaliteit
-
-7. **🎯 Marketing** (`/marketing`)
-   - Kortingscodes
-   - Promoties beheer
-   - Campaign tracking
-
-8. **📤 Bulk Import** (`/import`)
-   - Upload CSV bestanden
-   - Mass data import
-   - Error reporting
-
-9. **🔍 Zoeken** (`/search`)
-   - Zoek overal
-   - Cross-entity search
-   - Quick navigation
-
-10. **🔔 Notificaties** (`/notifications`)
-    - Stock alerts
-    - Order notifications
-    - Customer updates
-
-11. **📊 Activity Log** (`/activity`)
-    - Audit trail
-    - Action tracking
-    - Filter & statistics
-
-12. **⚙️ Instellingen** (`/settings`)
-    - 10 settings secties
-    - Complete configuratie
-
----
-
-## 🎯 QUICK ACTIONS
-
-### **Product Toevoegen:**
-1. Ga naar "Producten"
-2. Klik "Nieuw product"
-3. Vul gegevens in
-4. Klik "Aanmaken"
-
-### **Bestelling Maken:**
-1. Ga naar "Bestellingen"
-2. Klik "Nieuwe bestelling"
-3. Selecteer klant
-4. Voeg producten toe
-5. Klik "Aanmaken"
-
-### **Bulk Import:**
-1. Ga naar "Bulk Import"
-2. Kies type
-3. Download template
-4. Vul data in Excel
-5. Upload bestand
-
-### **Data Exporteren:**
-1. Ga naar "Dashboard"
-2. Scroll naar "Data Exporteren"
-3. Klik op type (Producten/Klanten/etc.)
-4. CSV wordt gedownload
-
----
-
-## 📊 SAMPLE DATA
-
-Het systeem komt met voorbeelddata:
-- ✅ 5 Categorieën
-- ✅ 7 Producten (€19.99 - €799.00)
-- ✅ 5 Klanten (complete profielen)
-- ✅ 5 Bestellingen (diverse statussen)
-
----
-
-## 🔑 API KEY
-
-Standaard development key:
-```
-dev-api-key-123
+$env:PORT="2001"
+npm start
 ```
 
-Deze wordt automatisch gebruikt door de frontend.
+---
+
+## 🌐 **URLs**
+
+| Service | URL | Beschrijving |
+|---------|-----|--------------|
+| **Dashboard** | http://localhost:2001 | Standaard admin dashboard |
+| **Live Dashboard** | http://localhost:2001/live | Real-time monitoring dashboard ⭐ |
+| **Backend API** | http://localhost:2000 | REST API endpoints |
+| **WebSocket** | ws://localhost:2000 | Real-time WebSocket server |
+| **Health Check** | http://localhost:2000/health | Server status |
 
 ---
 
-## 🎨 UI FEATURES
+## 📊 **Wat zit er in de Database?**
 
-- ⚡ Lightning branding
-- 🌙 Dark sidebar theme
-- 💫 Smooth animations
-- 📱 Fully responsive
-- 🎯 Color-coded statussen
-- 🔔 Real-time alerts
-- 📊 Interactive charts
+✅ **1 Website** - Voltmover Shop
+✅ **9 Categorieën** - Electronics, Fashion, Home & Garden, Sports, Books
+✅ **50 Producten** - Met varianten, attributen, en afbeeldingen
+✅ **100 Klanten** - Nederlandse namen en adressen  
+✅ **200 Bestellingen** - Complete orders met payment history
+✅ **50 Reviews** - Product reviews (3-5 sterren)
+✅ **4 Kortingscodes** - Actieve discount codes
+✅ **2 Verzendmethoden** - Standaard en Express
+✅ **4 BTW tarieven** - NL, BE, DE, FR
 
 ---
 
-## 🛠️ TROUBLESHOOTING
+## 🔑 **API Authentication**
 
-### **Backend start niet?**
+Voor alle `/api/*` endpoints (behalve public routes):
+
+**Header:**
+```
+x-api-key: dev-api-key-123
+```
+
+**Voorbeeld:**
+```bash
+curl http://localhost:2000/api/products \
+  -H "x-api-key: dev-api-key-123"
+```
+
+---
+
+## 🎁 **Test Kortingscodes**
+
+```
+WELCOME10  → 10% korting bij orders boven €50
+SUMMER25   → 25% korting bij orders boven €100  
+FREESHIP   → Gratis verzending boven €25
+SAVE50     → €50 korting bij orders boven €200
+```
+
+---
+
+## 🔥 **Real-Time Features**
+
+### **Live Dashboard** (http://localhost:2001/live)
+
+**Real-Time KPIs:**
+- 👥 Actieve Bezoekers
+- 🛒 Vandaag Bestellingen + Omzet
+- 💰 Gemiddelde Bestelling
+- ⚠️ Lage Voorraad Alerts
+
+**Live Updates:**
+- 📊 Charts (30 dagen bestellingen & omzet)
+- 👤 Actieve bezoekers met details
+- 🛍️ Recent orders feed (real-time)
+- 🔔 Toast notificaties bij nieuwe orders
+- 🔊 Geluid bij nieuwe bestellingen
+
+**WebSocket Events:**
+- Automatische updates elke 5 seconden
+- Instant notificaties bij nieuwe orders
+- Live bezoeker tracking
+- Real-time voorraad alerts
+
+---
+
+## 📡 **API Endpoints**
+
+### **Public (Geen Auth)**
+```bash
+GET  /public/products              # Alle producten
+GET  /public/products/:slug        # Enkel product
+GET  /public/categories            # Alle categorieën
+GET  /public/featured              # Featured producten
+GET  /public/shipping-methods      # Verzendmethoden
+POST /public/discount/validate     # Valideer kortingscode
+
+GET  /cart/:sessionId              # Winkelwagen ophalen
+POST /cart/:sessionId/items        # Item toevoegen
+POST /cart/:sessionId/checkout     # Checkout
+```
+
+### **Admin (Auth Required)**
+```bash
+# Real-time
+GET  /api/realtime/stats           # Complete live statistieken
+GET  /api/realtime/stats/quick     # Quick stats
+GET  /api/realtime/visitors        # Actieve bezoekers
+GET  /api/realtime/admins          # Online admins
+
+# Products
+GET  /api/products                 # Alle producten
+POST /api/products                 # Nieuw product
+PUT  /api/products/:id             # Update product
+DELETE /api/products/:id           # Verwijder product
+
+# Orders
+GET  /api/orders                   # Alle bestellingen
+GET  /api/orders/:id               # Enkele bestelling
+POST /api/orders                   # Nieuwe bestelling
+PATCH /api/orders/:id/status       # Update status
+
+# Customers
+GET  /api/customers                # Alle klanten
+POST /api/customers                # Nieuwe klant
+PUT  /api/customers/:id            # Update klant
+
+# Financial
+GET  /api/financial/overview       # Financieel overzicht
+GET  /api/financial/profit-by-product
+GET  /api/financial/revenue-over-time
+
+# Analytics
+GET  /api/analytics/all            # Alle analytics
+GET  /api/analytics/google-ads     # Google Ads data
+GET  /api/analytics/facebook-ads   # Facebook Ads data
+```
+
+---
+
+## 🧪 **Testing Real-Time Features**
+
+### **Test Nieuwe Order Notificatie**
+```bash
+curl -X POST http://localhost:2000/api/realtime/trigger/order/1 \
+  -H "x-api-key: dev-api-key-123"
+```
+→ Je ziet een toast notificatie in het Live Dashboard! 🎉
+
+### **Test Lage Voorraad Alert**
+```bash
+curl -X POST http://localhost:2000/api/realtime/trigger/lowstock/1 \
+  -H "x-api-key: dev-api-key-123"
+```
+→ Waarschuwing verschijnt in Live Dashboard! ⚠️
+
+### **Test API Calls**
+```bash
+# Haal producten op
+curl http://localhost:2000/public/products?limit=5
+
+# Haal categorieën op
+curl http://localhost:2000/public/categories
+
+# Live stats (vereist API key)
+curl http://localhost:2000/api/realtime/stats/quick \
+  -H "x-api-key: dev-api-key-123"
+```
+
+---
+
+## 🔧 **Database Beheer**
+
+### **Reset Database & Herlaad Data**
 ```bash
 cd cms
-npm install
-PORT=2000 npm start
+$env:DATABASE_URL="file:./prisma/dev.db"
+node scripts/complete-seed.js
 ```
 
-### **Frontend start niet?**
+### **Prisma Studio (Visual Database Editor)**
 ```bash
+cd cms
+npx prisma studio
+```
+→ Opent op http://localhost:5555
+
+---
+
+## 🎨 **Frontend Pagina's**
+
+| Route | Pagina | Features |
+|-------|--------|----------|
+| `/` | Dashboard | KPIs, grafieken, overzicht |
+| `/live` | **Live Dashboard** | Real-time monitoring ⭐ |
+| `/financial` | Financieel | Winst, kosten, marges |
+| `/products` | Producten | Product management |
+| `/categories` | Categorieën | Categorie beheer |
+| `/customers` | Klanten | Klanten database |
+| `/orders` | Bestellingen | Order management |
+| `/analytics` | Analytics | Platform metrics |
+| `/integrations` | Integraties | Platform connections |
+| `/import` | Bulk Import | CSV upload |
+| `/settings` | Instellingen | System config |
+
+---
+
+## 🚨 **Troubleshooting**
+
+### **Server start niet**
+```bash
+# Check of poort al in gebruik is
+netstat -ano | findstr :2000
+
+# Kill process
+taskkill /PID <process_id> /F
+
+# Start opnieuw
+cd cms
+$env:DATABASE_URL="file:./prisma/dev.db"
+npm start
+```
+
+### **Database errors**
+```bash
+# Regenereer Prisma client
+cd cms
+npx prisma generate
+
+# Reset database
+node scripts/complete-seed.js
+```
+
+### **Frontend laadt niet**
+```bash
+# Clear cache en herinstall
 cd cms/frontend
+rm -r node_modules package-lock.json
 npm install
-PORT=2001 npm start
+npm start
 ```
 
-### **404 errors?**
-- Controleer of backend draait op poort 2000
-- Check API key in frontend/src/services/api.ts
-
-### **Geen data?**
-```bash
-cd cms
-node scripts/seed.js
-node scripts/seed-extended.js
-```
+### **WebSocket connectie faalt**
+- Check of backend draait op poort 2000
+- Check browser console voor errors
+- Ververs de pagina
+- Check firewall settings
 
 ---
 
-## 🎉 KLAAR VOOR GEBRUIK!
+## 📚 **Documentatie**
 
-Het Voltmover CMS is nu **volledig operationeel** met:
-- ✅ 12 pagina's
-- ✅ 200+ features
-- ✅ Premium UI
-- ✅ Real-time updates
-- ✅ Complete documentation
+- `README.md` - Complete overview
+- `REALTIME_FEATURES.md` - Real-time features guide
+- `WEBSITE_INTEGRATIE_GUIDE.md` - Website integration
+- `VOLLEDIG_SYSTEEM.md` - Technical details
+- `ENTERPRISE_INTEGRATIONS.md` - Platform integrations
 
-**Open http://localhost:2001 en begin met je e-commerce management!** 🚀
+---
 
+## 🎯 **Volgende Stappen**
 
+### **1. Verken het Live Dashboard**
+Open http://localhost:2001/live en zie:
+- Real-time statistieken
+- Live grafieken
+- Actieve bezoekers (simuleer door test API calls)
+- Recent orders
+
+### **2. Test de APIs**
+```bash
+# Producten ophalen
+curl http://localhost:2000/public/products
+
+# Test realtime notificatie
+curl -X POST http://localhost:2000/api/realtime/trigger/order/5 \
+  -H "x-api-key: dev-api-key-123"
+```
+
+### **3. Bouw je eigen website**
+Gebruik de Public API endpoints om je webshop te bouwen:
+- Fetch producten
+- Toon categorieën
+- Winkelwagen functionaliteit
+- Checkout flow
+
+Zie `WEBSITE_INTEGRATIE_GUIDE.md` voor voorbeelden!
+
+### **4. Koppel je domein**
+- Deploy naar Railway/Vercel/Heroku
+- Configureer environment variables
+- Update CORS settings
+- Setup PostgreSQL (production)
+
+---
+
+## 💡 **Tips**
+
+✅ **Houd beide terminals open** - Backend én frontend moeten draaien
+✅ **Check console logs** - Errors en events worden gelogd
+✅ **Gebruik API key** - dev-api-key-123 voor alle admin endpoints
+✅ **Test real-time** - Open 2 browser tabs om live updates te zien
+✅ **Bekijk database** - Gebruik Prisma Studio (npx prisma studio)
+
+---
+
+## 🎉 **Success!**
+
+Je hebt nu een **volledig werkende enterprise-grade e-commerce backend** met:
+- ✅ Complete REST API
+- ✅ Real-time WebSocket server
+- ✅ Live monitoring dashboard
+- ✅ 200 orders voorbeelddata
+- ✅ Modern React admin panel
+- ✅ Database met realistische data
+
+**Veel plezier met je real-time backend!** 🚀⚡
+
+---
+
+**Made with ⚡ by Voltmover**

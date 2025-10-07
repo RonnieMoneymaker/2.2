@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { 
   LayoutDashboard, 
+  Activity,
   DollarSign,
   Package, 
   FolderTree, 
@@ -9,6 +10,7 @@ import {
   ShoppingCart,
   BarChart3,
   Plug,
+  Zap,
   Upload,
   Settings,
   Menu,
@@ -20,6 +22,8 @@ const Layout: React.FC = () => {
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
+    { name: 'Live Dashboard', href: '/live', icon: Activity },
+    { name: 'Live Integrations', href: '/integrations-live', icon: Zap },
     { name: 'Financieel', href: '/financial', icon: DollarSign },
     { name: 'Producten', href: '/products', icon: Package },
     { name: 'Categorieën', href: '/categories', icon: FolderTree },

@@ -181,3 +181,90 @@ export const deleteCustomer = async (req, res, next) => {
     next(error);
   }
 };
+
+// Get customer comments
+export const getCustomerComments = async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const { id } = req.params;
+
+    const customer = await prisma.customer.findFirst({
+      where: { id: Number(id), websiteId },
+    });
+
+    if (!customer) {
+      return res.status(404).json({ error: 'Klant niet gevonden' });
+    }
+
+    const comments = await prisma.customerComment.findMany({
+      where: { customerId: Number(id) },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    res.json({ comments });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Add customer comment
+export const addCustomerComment = async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const { id } = req.params;
+    const { comment, author, isInternal = true } = req.body;
+
+    const customer = await prisma.customer.findFirst({
+      where: { id: Number(id), websiteId },
+    });
+
+    if (!customer) {
+      return res.status(404).json({ error: 'Klant niet gevonden' });
+    }
+
+    const newComment = await prisma.customerComment.create({
+      data: {
+        customerId: Number(id),
+        comment,
+        author,
+        isInternal,
+      },
+    });
+
+    res.status(201).json(newComment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update customer comment
+export const updateCustomerComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+    const { comment } = req.body;
+
+    const updated = await prisma.customerComment.update({
+      where: { id: Number(commentId) },
+      data: { comment },
+    });
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Delete customer comment
+export const deleteCustomerComment = async (req, res, next) => {
+  try {
+    const { commentId } = req.params;
+
+    await prisma.customerComment.delete({
+      where: { id: Number(commentId) },
+    });
+
+    res.json({ message: 'Opmerking succesvol verwijderd' });
+  } catch (error) {
+    next(error);
+  }
+};

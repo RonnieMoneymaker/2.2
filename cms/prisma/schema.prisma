@@ -51,13 +51,17 @@ model Product {
   sku               String?
   description       String?
   shortDescription  String?
-  priceCents        Int              @default(0)
+  priceCents        Int              @default(0)  // Verkoopprijs
   comparePriceCents Int?             // Was price for discounts
-  costCents         Int?             // Cost price for profit calculation
+  costCents         Int?             // Inkoopprijs
+  taxRate           Float            @default(21.0) // BTW percentage (21% = 21.0)
+  shippingCostCents Int              @default(0) // Verzendkosten per product
+  profitMarginCents Int?             // Berekende netto winst (priceCents - costCents - shippingCostCents - tax)
   currency          String           @default("EUR")
   stockQuantity     Int              @default(0)
   lowStockThreshold Int              @default(5)
-  weight            Float?           // For shipping calculation
+  weight            Float?           // Voor verzendkosten berekening
+  dimensions        String?          // JSON: {"length": 10, "width": 10, "height": 10} in cm
   isActive          Boolean          @default(true)
   isFeatured        Boolean          @default(false)
   images            String?          // JSON array of image URLs
@@ -121,7 +125,9 @@ model Customer {
   postalCode        String?
   country           String?   @default("Nederland")
   taxNumber         String?   // VAT number for businesses
-  notes             String?   // Internal notes
+  notes             String?   // Internal notes - opmerkingen bij klanten
+  contactInfo       String?   // JSON: Extra contact info (mobiel, work phone, etc.)
+  tags              String?   // JSON array: ["vip", "wholesale", etc.]
   totalSpent        Int       @default(0) // in cents
   orderCount        Int       @default(0)
   isActive          Boolean   @default(true)
@@ -133,6 +139,7 @@ model Customer {
   orders            Order[]
   reviews           Review[]
   addresses         CustomerAddress[]
+  comments          CustomerComment[]
 
   @@unique([websiteId, email])
   @@index([websiteId, email])
@@ -161,6 +168,20 @@ model CustomerAddress {
   @@index([customerId])
 }
 
+// Customer Comments (opmerkingen bij klanten)
+model CustomerComment {
+  id         Int      @id @default(autoincrement())
+  customerId Int
+  comment    String
+  author     String?  // Naam van de admin die de opmerking heeft gemaakt
+  isInternal Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+}
+
 model Order {
   id                Int              @id @default(autoincrement())
   websiteId         Int
@@ -174,9 +195,12 @@ model Order {
   taxCents          Int              @default(0)
   discountCents     Int              @default(0)
   totalCents        Int              @default(0)
+  costCents         Int              @default(0) // Totale inkoopkosten van producten
+  profitCents       Int              @default(0) // Netto winst (totalCents - costCents - shippingCents - taxCents)
   currency          String           @default("EUR")
   customerNote      String?
-  internalNote      String?
+  internalNote      String?          // Bewerkbare opmerkingen
+  adminComments     String?          // Extra opmerkingen voor intern gebruik
   // Shipping Address
   shippingFirstName String?
   shippingLastName  String?
@@ -216,6 +240,7 @@ model Order {
   @@unique([websiteId, orderNumber])
   @@index([websiteId, status])
   @@index([websiteId, customerId])
+  @@index([websiteId, createdAt])
 }
 
 model OrderItem {
@@ -403,18 +428,21 @@ model Notification {
 model Integration {
   id            Int       @id @default(autoincrement())
   websiteId     Int
-  platform      String    // 'woocommerce', 'shopify', 'crisp', 'mollie', 'stripe', etc
+  platform      String    // 'woocommerce', 'shopify', 'crisp', 'mollie', 'stripe', 'google_ads', 'meta_ads', 'shipping_api', etc
   name          String
   isActive      Boolean   @default(true)
   config        String    // JSON with credentials
   lastSync      DateTime?
   syncStatus    String?   @default("idle") // 'idle', 'syncing', 'error', 'success'
   lastError     String?
+  autoSync      Boolean   @default(false) // Automatische synchronisatie
+  syncInterval  Int?      // Sync interval in minutes
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   website       Website   @relation(fields: [websiteId], references: [id], onDelete: Cascade)
   syncLogs      SyncLog[]
   webhooks      Webhook[]
+  adSpends      AdSpend[]
 
   @@unique([websiteId, platform, name])
 }
@@ -487,4 +515,83 @@ model ApiUsage {
   timestamp  DateTime @default(now())
 
   @@index([apiKey, timestamp])
+}
+
+// Ad Spend Tracking (Google Ads, Meta Ads, etc.)
+model AdSpend {
+  id            Int         @id @default(autoincrement())
+  websiteId     Int
+  integrationId Int?
+  platform      String      // 'google_ads', 'meta_ads', 'tiktok_ads', etc.
+  campaignId    String?     // External campaign ID
+  campaignName  String?
+  date          DateTime    // Datum van de uitgave
+  spendCents    Int         // Uitgaven in cents
+  impressions   Int         @default(0)
+  clicks        Int         @default(0)
+  conversions   Int         @default(0)
+  revenue       Int         @default(0) // Revenue attributed to this ad in cents
+  currency      String      @default("EUR")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  integration   Integration? @relation(fields: [integrationId], references: [id], onDelete: SetNull)
+
+  @@index([websiteId, date])
+  @@index([websiteId, platform, date])
+}
+
+// Shipping Rate Calculator (voor verzendkosten API)
+model ShippingRate {
+  id              Int      @id @default(autoincrement())
+  websiteId       Int
+  carrier         String   // 'postnl', 'dhl', 'dpd', 'ups', 'fedex', etc.
+  serviceName     String   // 'Standard', 'Express', etc.
+  country         String   // Destination country code
+  minWeightGrams  Int?     // Minimum weight
+  maxWeightGrams  Int?     // Maximum weight
+  priceCents      Int      // Base price in cents
+  pricePerKgCents Int      @default(0) // Extra cost per kg
+  deliveryDays    Int?     // Estimated delivery days
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([websiteId, carrier, country])
+}
+
+// Payment Provider Configuration
+model PaymentProvider {
+  id          Int      @id @default(autoincrement())
+  websiteId   Int
+  provider    String   // 'stripe', 'mollie', 'paypal', 'adyen', etc.
+  name        String   // Display name
+  isActive    Boolean  @default(true)
+  isTest      Boolean  @default(false) // Test mode vs live mode
+  apiKey      String?  // Encrypted API key
+  apiSecret   String?  // Encrypted API secret
+  webhookUrl  String?  // Webhook endpoint
+  config      String?  // JSON with extra configuration
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([websiteId, provider])
+  @@index([websiteId, isActive])
+}
+
+// Webshop Sync Queue (voor synchronisatie met externe webshops)
+model SyncQueue {
+  id          Int      @id @default(autoincrement())
+  websiteId   Int
+  entity      String   // 'product', 'order', 'customer'
+  entityId    Int
+  action      String   // 'create', 'update', 'delete'
+  status      String   @default("pending") // 'pending', 'processing', 'completed', 'failed'
+  attempts    Int      @default(0)
+  lastError   String?
+  payload     String?  // JSON data to sync
+  createdAt   DateTime @default(now())
+  processedAt DateTime?
+
+  @@index([websiteId, status])
+  @@index([websiteId, entity, entityId])
 }

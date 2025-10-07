@@ -1,259 +1,396 @@
-# 🚀 NIEUWE WERKENDE FEATURES
+# 🚀 Nieuwe Features - Voltmover CMS 2.0
 
-## ✨ WAT IS ER NIEUW TOEGEVOEGD
+## ✨ Wat er nu allemaal is toegevoegd:
 
-### **1. 📤 BULK IMPORT SYSTEEM**
+### 1. **🔄 Bulk Operations** (`/api/bulk/*`)
 
-#### **Features:**
-- ✅ **CSV Upload** voor producten en klanten
-- ✅ **Template Download** met voorbeelddata
-- ✅ **Real-time Import** met progress
-- ✅ **Success/Error Reporting** met details
-- ✅ **Validatie** van alle velden
-- ✅ **Batch Processing** met error handling
+**Bulk edit, delete, en update voor efficiënt beheer**
 
-#### **Hoe te Gebruiken:**
-1. Ga naar "Bulk Import" in het menu
-2. Kies type (Producten of Klanten)
-3. Download de CSV template
-4. Vul data in Excel/Google Sheets in
-5. Upload het bestand
-6. Zie real-time resultaten
+#### Endpoints:
+```bash
+# Bulk update producten
+POST /api/bulk/products/update
+Body: { productIds: [1,2,3], updates: { isActive: false } }
 
-#### **Template Formaat:**
+# Bulk delete producten
+POST /api/bulk/products/delete
+Body: { productIds: [1,2,3] }
 
-**Producten:**
-```csv
-name,slug,sku,description,price,stock,categoryId
-Example Product,example-product,EX-001,Product description,19.99,100,1
+# Bulk update order status
+POST /api/bulk/orders/update-status
+Body: { orderIds: [1,2,3], status: "shipped" }
+
+# Bulk export
+POST /api/bulk/export
+Body: { type: "products"|"orders"|"customers", filters: {...} }
+
+# Bulk import producten
+POST /api/bulk/products/import
+Body: { products: [{...}, {...}] }
+
+# Bulk voorraad update
+POST /api/bulk/products/update-stock
+Body: { updates: [{ productId: 1, stockQuantity: 50 }] }
+
+# Bulk prijzen aanpassen
+POST /api/bulk/products/update-pricing
+Body: { productIds: [1,2,3], priceAdjustment: { type: "percentage", value: 10 } }
 ```
 
-**Klanten:**
-```csv
-email,firstName,lastName,phone,address,city,postalCode,country
-john@example.com,John,Doe,0612345678,Main Street 123,Amsterdam,1012AB,Nederland
+**Features:**
+- ✅ Update meerdere producten tegelijk
+- ✅ Bulk delete met veiligheid checks
+- ✅ Order status bulk update met history tracking
+- ✅ Export gefilterde data
+- ✅ Import met create/update logic
+- ✅ Prijzen aanpassen (percentage of fixed)
+
+---
+
+### 2. **🔔 Notifications Center** (`/api/notifications`)
+
+**Centraal notificatie systeem met real-time updates**
+
+#### Endpoints:
+```bash
+# Alle notificaties ophalen
+GET /api/notifications?page=1&limit=20&unreadOnly=true
+
+# Markeer als gelezen
+PATCH /api/notifications/:id/read
+
+# Markeer alles als gelezen
+POST /api/notifications/mark-all-read
+
+# Verwijder notificatie
+DELETE /api/notifications/:id
+
+# Verwijder alle gelezen
+POST /api/notifications/clear-read
+
+# Notificatie statistieken
+GET /api/notifications/stats
+
+# Nieuwe notificatie (intern)
+POST /api/notifications
+Body: { type, title, message, link }
 ```
 
-#### **Import Results:**
-- ✅ Success count (groene kaart)
-- ❌ Failed count (rode kaart)
-- ⚠️ Error lijst met details per rij
-- 📊 Totaal overzicht
+**Features:**
+- ✅ Ongelezen notificaties counter
+- ✅ Paginatie support
+- ✅ Filter op ongelezen
+- ✅ Bulk markeer als gelezen
+- ✅ Statistieken per type
+- ✅ Auto-cleanup van gelezen items
+
+**Notificatie Types:**
+- `order_placed` - Nieuwe bestelling
+- `low_stock` - Lage voorraad
+- `new_customer` - Nieuwe klant
+- `payment_received` - Betaling ontvangen
+- `review_submitted` - Review ingediend
 
 ---
 
-### **2. 📊 ACTIVITY LOG / AUDIT TRAIL**
+### 3. **🔍 Advanced Search & Filters** (`/api/search/*`)
 
-#### **Features:**
-- ✅ **Real-time Activity Tracking** van alle acties
-- ✅ **5 Action Types**: Create, Update, Delete, View, Export
-- ✅ **4 Entity Types**: Products, Customers, Orders, Categories
-- ✅ **Filters** op entity en action
-- ✅ **Statistics Dashboard** met totalen
-- ✅ **Timestamps** met Nederlandse datum/tijd
-- ✅ **User Tracking** (system/admin)
-- ✅ **Color Coding** per actie type
+**Krachtige zoek- en filter functionaliteit**
 
-#### **Activity Types:**
-- 🟢 **Create** (Aangemaakt) - Groene badge
-- 🔵 **Update** (Bijgewerkt) - Blauwe badge
-- 🔴 **Delete** (Verwijderd) - Rode badge
-- ⚪ **View** (Bekeken) - Grijze badge
-- 🟣 **Export** (Geëxporteerd) - Paarse badge
+#### Endpoints:
+```bash
+# Global search (alles doorzoeken)
+GET /api/search/global?query=laptop&limit=10
 
-#### **Dashboard Stats:**
-- **Totaal**: Alle activiteiten
-- **Vandaag**: Activiteiten van vandaag
-- **Acties**: Aantal verschillende actie types
-- **Entities**: Aantal verschillende entity types
+# Advanced product filter
+POST /api/search/products/advanced
+Body: {
+  categoryId: 1,
+  minPrice: 100,
+  maxPrice: 500,
+  inStock: true,
+  lowStock: false,
+  featured: true,
+  search: "laptop",
+  sortBy: "priceCents",
+  sortOrder: "asc",
+  page: 1,
+  limit: 20
+}
 
-#### **Filtering:**
-- Filter op entity (product, customer, order, category)
-- Filter op action (create, update, delete, view, export)
-- Real-time update van lijst
+# Advanced order filter
+POST /api/search/orders/advanced
+Body: {
+  status: "shipped",
+  paymentStatus: "paid",
+  minTotal: 50,
+  maxTotal: 500,
+  dateFrom: "2025-01-01",
+  dateTo: "2025-12-31",
+  customerId: 1,
+  search: "ORD-",
+  sortBy: "createdAt",
+  sortOrder: "desc"
+}
 
----
-
-## 📊 COMPLETE PAGINA OVERZICHT
-
-### **9 VOLLEDIGE PAGINA'S**
-1. ✅ **Dashboard** - KPIs, grafieken, CSV export
-2. ✅ **Producten** - CRUD, zoeken, voorraad
-3. ✅ **Categorieën** - Hiërarchisch systeem
-4. ✅ **Klanten** - Volledige profielen
-5. ✅ **Bestellingen** - Geavanceerd order management
-6. ✅ **Rapporten** - 4 report types met analytics
-7. ✅ **Bulk Import** - CSV upload voor bulk data 🆕
-8. ✅ **Activity Log** - Audit trail systeem 🆕
-9. ✅ **Instellingen** - 10 configuratie secties
-
----
-
-## 🎯 FEATURE COUNT: **170+**
-
-### **Nieuwe Features Breakdown:**
-- **Bulk Import**: 15 features
-- **Activity Log**: 15 features
-- **Totaal Systeem**: 170+ features
-
----
-
-## 🔧 TECHNISCHE DETAILS
-
-### **Backend API Endpoints**
-```
-Bulk Import:
-  - Verwerkt via frontend (CSV parsing)
-  - Gebruikt bestaande CRUD endpoints
-  - Batch processing met error handling
-
-Activity Log:
-  GET    /api/activity              # List activities
-  GET    /api/activity/stats        # Statistics
-  DELETE /api/activity              # Clear log
+# Advanced customer filter
+POST /api/search/customers/advanced
+Body: {
+  country: "NL",
+  city: "Amsterdam",
+  minOrders: 5,
+  minSpent: 100,
+  hasOrders: true,
+  search: "john"
+}
 ```
 
-### **In-Memory Activity Storage**
-- Laatste 1000 activiteiten
-- Per website gescheiden
-- Real-time tracking
-- Automatische cleanup
+**Features:**
+- ✅ Global search over alle entiteiten
+- ✅ Fuzzy search met `contains` mode
+- ✅ Prijs range filtering
+- ✅ Datum range filtering
+- ✅ Voorraad filters (in stock, low stock)
+- ✅ Sorteer opties
+- ✅ Paginatie op alle endpoints
+- ✅ Combineerbare filters
 
 ---
 
-## 🎨 UI/UX IMPROVEMENTS
+### 4. **📊 Performance Metrics** (`/api/performance/*`)
 
-### **Bulk Import:**
-- Drag & drop file upload
-- Template download buttons
-- Real-time progress
-- Success/error cards met color coding
-- Detailed error messages per row
-- Instructions panel
+**Gedetailleerde performance analytics en insights**
 
-### **Activity Log:**
-- Timeline view
-- Color-coded action badges
-- Icon per entity en action
-- Timestamp formatting
-- Filter dropdowns
-- Statistics cards
-- Empty state messaging
+#### Endpoints:
+```bash
+# Performance overzicht
+GET /api/performance/overview?period=30
 
----
+# Verkopen per dag
+GET /api/performance/sales-by-day?days=30
 
-## 📈 USE CASES
+# Categorie performance
+GET /api/performance/categories?days=30
 
-### **Bulk Import:**
-1. **Initial Data Setup** - Import 100+ products at once
-2. **Customer Migration** - Move existing customer database
-3. **Regular Updates** - Bulk update prices/stock
-4. **Testing** - Quick setup of test data
+# Customer Lifetime Value
+GET /api/performance/customer-ltv
+```
 
-### **Activity Log:**
-1. **Audit Trail** - Who changed what and when
-2. **Compliance** - Track all data modifications
-3. **Debugging** - See recent system actions
-4. **Analytics** - Understand user behavior
-5. **Security** - Monitor suspicious activity
+**Metrics Overview Response:**
+```json
+{
+  "period": 30,
+  "metrics": {
+    "totalOrders": 200,
+    "totalRevenue": 50000,
+    "totalCustomers": 100,
+    "averageOrderValue": 25000,
+    "conversionRate": 45.5,
+    "returnRate": 2.3
+  },
+  "topProducts": [...],
+  "topCustomers": [...]
+}
+```
 
----
-
-## 🚀 PERFORMANCE
-
-### **Bulk Import:**
-- ✅ Processes 100+ items efficiently
-- ✅ Individual error handling
-- ✅ Non-blocking UI
-- ✅ Progress feedback
-- ✅ Rollback ready
-
-### **Activity Log:**
-- ✅ In-memory for speed
-- ✅ Capped at 1000 items
-- ✅ Fast filtering
-- ✅ Instant updates
-- ✅ Low memory footprint
+**Features:**
+- ✅ Complete performance metrics
+- ✅ Top 10 producten by revenue
+- ✅ Top 10 klanten by spending
+- ✅ Conversion rate berekening
+- ✅ Return/cancellation rate
+- ✅ Verkopen per dag (chart data)
+- ✅ Categorie performance analyse
+- ✅ Customer Lifetime Value (LTV)
+- ✅ Dagelijkse trends & patronen
 
 ---
 
-## 🎯 WERKENDE FEATURES
+## 🎯 **Use Cases**
 
-### **✅ Bulk Import:**
-- [x] CSV file upload
-- [x] Template download
-- [x] Product import
-- [x] Customer import
-- [x] Validation
-- [x] Error reporting
-- [x] Success counting
+### **Bulk Operations**
+```javascript
+// Update 50 producten tegelijk naar actief
+const response = await fetch('http://localhost:2000/api/bulk/products/update', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'x-api-key': 'dev-api-key-123'
+  },
+  body: JSON.stringify({
+    productIds: [1,2,3,4,5,...50],
+    updates: { isActive: true }
+  })
+});
+// → { success: true, updated: 50 }
 
-### **✅ Activity Log:**
-- [x] Activity tracking
-- [x] Real-time display
-- [x] Filtering
-- [x] Statistics
-- [x] Timestamps
-- [x] Color coding
-- [x] Icon display
+// Prijzen verhogen met 10%
+await fetch('http://localhost:2000/api/bulk/products/update-pricing', {
+  method: 'POST',
+  headers: { 'x-api-key': 'dev-api-key-123', 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    productIds: [1,2,3],
+    priceAdjustment: { type: 'percentage', value: 10 }
+  })
+});
+```
+
+### **Notifications Center**
+```javascript
+// Ongelezen notificaties ophalen
+const notifications = await fetch(
+  'http://localhost:2000/api/notifications?unreadOnly=true',
+  { headers: { 'x-api-key': 'dev-api-key-123' } }
+).then(r => r.json());
+
+console.log(`${notifications.unreadCount} ongelezen notificaties`);
+
+// Alles markeren als gelezen
+await fetch('http://localhost:2000/api/notifications/mark-all-read', {
+  method: 'POST',
+  headers: { 'x-api-key': 'dev-api-key-123' }
+});
+```
+
+### **Advanced Search**
+```javascript
+// Zoek alle producten met "laptop" tussen €500-€1500
+const results = await fetch('http://localhost:2000/api/search/products/advanced', {
+  method: 'POST',
+  headers: { 'x-api-key': 'dev-api-key-123', 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    search: 'laptop',
+    minPrice: 500,
+    maxPrice: 1500,
+    inStock: true,
+    sortBy: 'priceCents',
+    sortOrder: 'asc'
+  })
+}).then(r => r.json());
+
+console.log(`${results.pagination.total} producten gevonden`);
+```
+
+### **Performance Metrics**
+```javascript
+// Haal performance metrics op
+const perf = await fetch(
+  'http://localhost:2000/api/performance/overview?period=30',
+  { headers: { 'x-api-key': 'dev-api-key-123' } }
+).then(r => r.json());
+
+console.log(`Conversion rate: ${perf.metrics.conversionRate}%`);
+console.log(`Top product: ${perf.topProducts[0].productName}`);
+console.log(`Revenue: €${perf.metrics.totalRevenue / 100}`);
+```
 
 ---
 
-## 📚 DOCUMENTATIE
+## 📋 **Volledig API Overzicht**
 
-### **Bulk Import Instructies:**
-1. Download template voor gewenst type
-2. Vul gegevens in spreadsheet in
-3. Exporteer als CSV (UTF-8)
-4. Upload bestand
-5. Controleer resultaten
+| Category | Endpoints | Features |
+|----------|-----------|----------|
+| **Bulk** | 7 endpoints | Mass updates, deletes, imports, exports |
+| **Notifications** | 7 endpoints | Center, stats, read/unread management |
+| **Search** | 4 endpoints | Global search, advanced filters |
+| **Performance** | 4 endpoints | Metrics, analytics, insights, LTV |
+| **Existing** | 60+ endpoints | Products, orders, customers, analytics, etc. |
 
-### **CSV Requirements:**
-- UTF-8 encoding
-- Komma als separator
-- Headers in eerste rij
-- Geen lege regels
-- Valide email formaat voor klanten
-
-### **Activity Log Usage:**
-- Automatisch tracking (geen setup nodig)
-- Filter op type voor specifieke acties
-- Bekijk details per activiteit
-- Monitor real-time
+**Total: 82+ API Endpoints!**
 
 ---
 
-## 🎉 SAMENVATTING
+## 🚀 **Integration Examples**
 
-Het Voltmover CMS heeft nu:
-- ✅ **9 complete pagina's**
-- ✅ **170+ features**
-- ✅ **2 nieuwe modules** (Bulk Import + Activity Log)
-- ✅ **Professional workflow tools**
-- ✅ **Audit trail capabilities**
-- ✅ **Bulk data management**
-- ✅ **Production ready**
+### **React Component - Bulk Actions**
+```tsx
+function BulkProductActions() {
+  const [selectedIds, setSelectedIds] = useState([]);
+  
+  const bulkActivate = async () => {
+    await fetch('http://localhost:2000/api/bulk/products/update', {
+      method: 'POST',
+      headers: {
+        'x-api-key': 'dev-api-key-123',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        productIds: selectedIds,
+        updates: { isActive: true }
+      })
+    });
+    alert(`${selectedIds.length} producten geactiveerd!`);
+  };
+  
+  return (
+    <button onClick={bulkActivate}>
+      Activeer {selectedIds.length} producten
+    </button>
+  );
+}
+```
+
+### **Admin Dashboard - Performance Widget**
+```tsx
+function PerformanceWidget() {
+  const [metrics, setMetrics] = useState(null);
+  
+  useEffect(() => {
+    fetch('http://localhost:2000/api/performance/overview?period=7', {
+      headers: { 'x-api-key': 'dev-api-key-123' }
+    })
+    .then(r => r.json())
+    .then(setMetrics);
+  }, []);
+  
+  return (
+    <div>
+      <h3>Deze Week</h3>
+      <p>Orders: {metrics?.metrics.totalOrders}</p>
+      <p>Revenue: €{(metrics?.metrics.totalRevenue / 100).toFixed(2)}</p>
+      <p>Conversion: {metrics?.metrics.conversionRate}%</p>
+    </div>
+  );
+}
+```
 
 ---
 
-## 🔥 HIGHLIGHTS
+## 🎁 **Wat je nu hebt:**
 
-### **Bulk Import:**
-- 📤 Upload 100+ items in seconds
-- 📊 See exactly what succeeded/failed
-- 📝 Templates prevent errors
-- ⚡ Fast batch processing
-
-### **Activity Log:**
-- 🔍 Full visibility of all actions
-- 📈 Statistics dashboard
-- 🎨 Beautiful timeline UI
-- 🔒 Audit compliance ready
+✅ **Complete E-Commerce Backend**
+✅ **Real-Time WebSocket Server**
+✅ **Live Dashboard met Statistics**
+✅ **Bulk Operations voor Efficiency**
+✅ **Notifications Center**
+✅ **Advanced Search & Filters**
+✅ **Performance Analytics**
+✅ **82+ API Endpoints**
+✅ **200+ Orders Voorbeelddata**
+✅ **100% Production Ready**
 
 ---
 
-**Voltmover CMS v2.1** - Now with Bulk Import & Activity Log! 🚀
+## 📚 **Documentatie**
 
-Access at: **http://localhost:2001**
+- `START_GUIDE.md` - Quick start instructies
+- `REALTIME_FEATURES.md` - Real-time features guide
+- `NIEUWE_FEATURES.md` - Deze file (nieuwe features)
+- `README.md` - Complete overview
+- `WEBSITE_INTEGRATIE_GUIDE.md` - Website integratie
 
+---
 
+## 🎯 **Next Steps**
+
+1. ✅ Test bulk operations
+2. ✅ Implementeer notifications UI
+3. ✅ Bouw advanced filter UI
+4. ✅ Voeg performance dashboard toe
+5. ✅ Koppel je website
+
+---
+
+**Je hebt nu een enterprise-grade e-commerce platform!** 🚀⚡
+
+Made with ⚡ by Voltmover

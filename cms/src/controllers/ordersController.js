@@ -202,6 +202,65 @@ export const updateOrderStatus = async (req, res, next) => {
   }
 };
 
+// NIEUWE FUNCTIE: Volledige order bewerken
+export const updateOrder = async (req, res, next) => {
+  try {
+    const websiteId = req.website.id;
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const order = await prisma.order.findFirst({
+      where: { id: Number(id), websiteId },
+      include: { items: true },
+    });
+
+    if (!order) {
+      return res.status(404).json({ error: 'Bestelling niet gevonden' });
+    }
+
+    // Bereken netto winst als er items zijn
+    let profitCents = 0;
+    let costCents = 0;
+    if (order.items && order.items.length > 0) {
+      for (const item of order.items) {
+        const product = await prisma.product.findUnique({
+          where: { id: item.productId },
+        });
+        if (product && product.costCents) {
+          costCents += product.costCents * item.quantity;
+        }
+      }
+      profitCents = order.totalCents - costCents - (order.shippingCents || 0);
+    }
+
+    // Update order
+    const updated = await prisma.order.update({
+      where: { id: Number(id) },
+      data: {
+        ...updateData,
+        costCents,
+        profitCents,
+      },
+      include: {
+        customer: true,
+        items: {
+          include: {
+            product: true,
+          },
+        },
+        statusHistory: {
+          orderBy: { createdAt: 'desc' },
+          take: 10,
+        },
+      },
+    });
+
+    res.json(updated);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const deleteOrder = async (req, res, next) => {
   try {
     const websiteId = req.website.id;
@@ -241,23 +300,39 @@ export const deleteOrder = async (req, res, next) => {
 export const getOrderStats = async (req, res, next) => {
   try {
     const websiteId = req.website.id;
+    const { startDate, endDate } = req.query;
+
+    const dateFilter = {};
+    if (startDate) {
+      dateFilter.createdAt = { gte: new Date(startDate) };
+    }
+    if (endDate) {
+      if (dateFilter.createdAt) {
+        dateFilter.createdAt.lte = new Date(endDate);
+      } else {
+        dateFilter.createdAt = { lte: new Date(endDate) };
+      }
+    }
 
     const [total, pending, processing, shipped, delivered, cancelled] = await Promise.all([
-      prisma.order.count({ where: { websiteId } }),
-      prisma.order.count({ where: { websiteId, status: 'pending' } }),
-      prisma.order.count({ where: { websiteId, status: 'processing' } }),
-      prisma.order.count({ where: { websiteId, status: 'shipped' } }),
-      prisma.order.count({ where: { websiteId, status: 'delivered' } }),
-      prisma.order.count({ where: { websiteId, status: 'cancelled' } }),
+      prisma.order.count({ where: { websiteId, ...dateFilter } }),
+      prisma.order.count({ where: { websiteId, status: 'pending', ...dateFilter } }),
+      prisma.order.count({ where: { websiteId, status: 'processing', ...dateFilter } }),
+      prisma.order.count({ where: { websiteId, status: 'shipped', ...dateFilter } }),
+      prisma.order.count({ where: { websiteId, status: 'delivered', ...dateFilter } }),
+      prisma.order.count({ where: { websiteId, status: 'cancelled', ...dateFilter } }),
     ]);
 
-    const revenue = await prisma.order.aggregate({
+    const aggregates = await prisma.order.aggregate({
       where: { 
         websiteId, 
-        status: { not: 'cancelled' } 
+        status: { not: 'cancelled' },
+        ...dateFilter
       },
       _sum: {
         totalCents: true,
+        profitCents: true,
+        costCents: true,
       },
     });
 
@@ -270,7 +345,9 @@ export const getOrderStats = async (req, res, next) => {
         delivered,
         cancelled,
       },
-      revenue: revenue._sum.totalCents || 0,
+      revenue: aggregates._sum.totalCents || 0,
+      profit: aggregates._sum.profitCents || 0,
+      costs: aggregates._sum.costCents || 0,
     });
   } catch (error) {
     next(error);

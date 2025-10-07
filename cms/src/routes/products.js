@@ -41,7 +41,22 @@ router.get('/', async (req, res, next) => {
 router.post('/', async (req, res, next) => {
   try {
     const websiteId = req.website.id;
-    const { name, slug, sku, description, priceCents, currency, stockQuantity, categoryId, images } = req.body;
+    const { 
+      name, slug, sku, description, shortDescription,
+      priceCents, costCents, taxRate, shippingCostCents,
+      comparePriceCents, currency, stockQuantity, 
+      categoryId, images, weight, dimensions,
+      lowStockThreshold, isFeatured, isActive,
+      metaTitle, metaDescription
+    } = req.body;
+    
+    // Bereken netto winst
+    const price = priceCents ?? 0;
+    const cost = costCents ?? 0;
+    const shipping = shippingCostCents ?? 0;
+    const tax = (price * ((taxRate ?? 21) / 100));
+    const profitMarginCents = price - cost - shipping - Math.floor(tax);
+    
     const product = await prisma.product.create({
       data: {
         websiteId,
@@ -49,11 +64,24 @@ router.post('/', async (req, res, next) => {
         slug,
         sku,
         description,
-        priceCents: priceCents ?? 0,
+        shortDescription,
+        priceCents: price,
+        costCents: cost,
+        taxRate: taxRate ?? 21.0,
+        shippingCostCents: shipping,
+        profitMarginCents,
+        comparePriceCents,
         currency: currency ?? 'EUR',
         stockQuantity: stockQuantity ?? 0,
+        lowStockThreshold: lowStockThreshold ?? 5,
         categoryId: categoryId ?? null,
-        images: images ?? null
+        images: images ?? null,
+        weight,
+        dimensions,
+        isFeatured: isFeatured ?? false,
+        isActive: isActive ?? true,
+        metaTitle,
+        metaDescription,
       }
     });
     res.status(201).json({ product });
@@ -68,9 +96,22 @@ router.put('/:id', async (req, res, next) => {
     const websiteId = req.website.id;
     const id = parseInt(req.params.id, 10);
     const data = req.body;
+    
     // Ensure record belongs to this website
     const exists = await prisma.product.findFirst({ where: { id, websiteId } });
     if (!exists) return res.status(404).json({ error: 'Product niet gevonden' });
+    
+    // Herbereken netto winst als financiële velden worden geupdate
+    if (data.priceCents !== undefined || data.costCents !== undefined || 
+        data.shippingCostCents !== undefined || data.taxRate !== undefined) {
+      const price = data.priceCents ?? exists.priceCents;
+      const cost = data.costCents ?? exists.costCents ?? 0;
+      const shipping = data.shippingCostCents ?? exists.shippingCostCents ?? 0;
+      const taxRate = data.taxRate ?? exists.taxRate ?? 21;
+      const tax = Math.floor(price * (taxRate / 100));
+      data.profitMarginCents = price - cost - shipping - tax;
+    }
+    
     const product = await prisma.product.update({ where: { id }, data });
     res.json({ product });
   } catch (e) {

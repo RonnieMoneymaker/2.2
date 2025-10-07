@@ -1,10 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
+import { createServer } from 'http';
 import compression from 'compression';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { PrismaClient } from '../generated/prisma/index.js';
+
+// Import all routes
 import productsRouter from './routes/products.js';
 import categoriesRouter from './routes/categories.js';
 import statsRouter from './routes/stats.js';
@@ -22,24 +25,26 @@ import cartRouter from './routes/cart.js';
 import mediaRouter from './routes/media.js';
 import financialRouter from './routes/financial.js';
 import settingsRouter from './routes/settings.js';
+import realtimeRouter from './routes/realtime.js';
 import bulkRouter from './routes/bulk.js';
 import notificationsRouter from './routes/notifications.js';
 import searchRouter from './routes/search.js';
 import performanceRouter from './routes/performance.js';
-import adSpendRouter from './routes/adSpend.js';
-import shippingRouter from './routes/shipping.js';
-import paymentRouter from './routes/payment.js';
-import webshopSyncRouter from './routes/webshopSync.js';
+import realtimeService from './services/realtime.js';
 
 const app = express();
+const httpServer = createServer(app);
 const prisma = new PrismaClient();
 
 const PORT = process.env.PORT || 5050;
 
+// Initialize WebSocket server
+realtimeService.initialize(httpServer);
+
 app.use(helmet());
 app.use(compression());
 app.use(cors({
-  origin: '*', // In production, specify your actual domain(s)
+  origin: '*',
   credentials: true,
   allowedHeaders: ['Content-Type', 'x-api-key', 'Authorization'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS']
@@ -47,23 +52,27 @@ app.use(cors({
 app.use(morgan('tiny'));
 app.use(express.json({ limit: '10mb' }));
 
-// Public health before API key guard
-app.get('/health', (req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
+// Public health check
+app.get('/health', (req, res) => res.json({ 
+  status: 'ok', 
+  timestamp: new Date().toISOString(),
+  version: '2.0.0'
+}));
 
-// Serve admin UI and static assets with caching
+// Serve admin UI and static assets
 app.use(express.static('public', { maxAge: '7d', etag: true }));
 
-// Serve uploaded media files (public access)
+// Serve uploaded media files
 app.use('/media', express.static('uploads', { maxAge: '7d', etag: true }));
 
-// PUBLIC ROUTES (no authentication required for webshop)
+// PUBLIC ROUTES (no authentication)
 app.use('/public', publicRouter);
 app.use('/cart', cartRouter);
 
-// Upload route (no API key needed for now - would add in production)
+// Upload route (no API key for now)
 app.use('/api/upload', uploadRouter);
 
-// Webhooks (no API key needed - external services)
+// Webhooks (no API key - external services)
 app.use('/api/webhooks', webhooksRouter);
 
 // Multi-tenant resolution via API key
@@ -80,6 +89,7 @@ app.use(async (req, res, next) => {
   }
 });
 
+// API ROUTES (require authentication)
 app.use('/api/products', productsRouter);
 app.use('/api/categories', categoriesRouter);
 app.use('/api/stats', statsRouter);
@@ -93,23 +103,27 @@ app.use('/api/email-marketing', emailMarketingRouter);
 app.use('/api/media', mediaRouter);
 app.use('/api/financial', financialRouter);
 app.use('/api/settings', settingsRouter);
+app.use('/api/realtime', realtimeRouter);
 app.use('/api/bulk', bulkRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/performance', performanceRouter);
-app.use('/api/adspend', adSpendRouter);
-app.use('/api/shipping', shippingRouter);
-app.use('/api/payment', paymentRouter);
-app.use('/api/webshop-sync', webshopSyncRouter);
 
+// Error handler
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).json({ error: 'Interne serverfout' });
 });
 
-app.listen(PORT, () => {
-  console.log(`CMS API luistert op poort ${PORT}`);
+httpServer.listen(PORT, () => {
+  console.log(`✅ CMS API luistert op poort ${PORT}`);
+  console.log(`✅ WebSocket server actief op poort ${PORT}`);
+  console.log(`✅ Nieuwe features beschikbaar:`);
+  console.log(`   - Bulk operations (/api/bulk/*)`);
+  console.log(`   - Notifications center (/api/notifications)`);
+  console.log(`   - Advanced search (/api/search/*)`);
+  console.log(`   - Performance metrics (/api/performance/*)`);
 });
 
 export default app;
-
+export { realtimeService };
