@@ -1,0 +1,29 @@
+{
+  "common": {
+    "loading": "Chargement...",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "add": "Ajouter",
+    "search": "Rechercher",
+    "filter": "Filtre",
+    "export": "Exporter",
+    "refresh": "Actualiser"
+  },
+  "navigation": {
+    "dashboard": "Tableau de bord",
+    "customers": "Clients",
+    "orders": "Commandes",
+    "products": "Produits",
+    "advertising": "Marketing",
+    "ai": "Insights IA",
+    "map": "Carte Live Magique"
+  },
+  "dashboard": {
+    "title": "Aperçu du tableau de bord",
+    "totalCustomers": "Total Clients",
+    "revenue": "Revenus",
+    "realProfit": "Profit Réel"
+  }
+}

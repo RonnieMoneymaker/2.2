@@ -1,0 +1,55 @@
+{
+  "name": "ronnie-crm-complete",
+  "version": "1.0.0",
+  "description": "Ronnie CRM - Volledig CRM systeem voor webshop - klantenbeheer en analytics",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "nodemon server.js",
+    "client": "cd client && npm start",
+    "build": "cd client && npm run build",
+    "build:production": "npm run install-client && cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run build:production",
+    "setup": "node start.js",
+    "deploy:vercel": "cd client && npx vercel --prod",
+    "test:production": "NODE_ENV=production node server.js",
+    "test:supabase": "node test-supabase-connection.js",
+    "setup:supabase": "echo 'Volg SUPABASE_SETUP.md voor instructies'"
+  },
+  "keywords": [
+    "crm",
+    "webshop",
+    "customer-management",
+    "analytics"
+  ],
+  "author": "Webshop CRM",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.15.0",
+    "@sendgrid/mail": "^8.1.5",
+    "axios": "^1.11.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "express-session": "^1.18.2",
+    "express-validator": "^7.0.1",
+    "google-ads-api": "^21.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "nodemailer": "^7.0.6",
+    "pdfkit": "^0.17.2",
+    "pg": "^8.12.0",
+    "socket.io": "^4.8.1",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.1",
+    "prisma": "^6.15.0"
+  }
+}

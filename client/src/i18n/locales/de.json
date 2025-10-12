@@ -1,0 +1,29 @@
+{
+  "common": {
+    "loading": "Laden...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "add": "Hinzufügen",
+    "search": "Suchen",
+    "filter": "Filter",
+    "export": "Exportieren",
+    "refresh": "Aktualisieren"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "customers": "Kunden",
+    "orders": "Bestellungen",
+    "products": "Produkte",
+    "advertising": "Marketing",
+    "ai": "KI Einblicke",
+    "map": "Magic Live Karte"
+  },
+  "dashboard": {
+    "title": "Dashboard Übersicht",
+    "totalCustomers": "Gesamte Kunden",
+    "revenue": "Umsatz",
+    "realProfit": "Echter Gewinn"
+  }
+}

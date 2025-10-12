@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Core models matching current frontend types
+
+model Customer {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  first_name      String
+  last_name       String
+  phone           String?
+  address         String?
+  city            String?
+  postal_code     String?
+  country         String    @default("Nederland")
+  date_created    DateTime  @default(now())
+  last_order_date DateTime?
+  total_orders    Int       @default(0)
+  total_spent     Decimal   @default(0)
+  customer_status CustomerStatus @default(active)
+  notes           String?
+  orders          Order[]
+  interactions    Interaction[]
+}
+
+model Order {
+  id               Int       @id @default(autoincrement())
+  customer_id      Int
+  order_number     String    @unique
+  order_date       DateTime  @default(now())
+  status           OrderStatus @default(pending)
+  total_amount     Decimal
+  currency         String     @default("EUR")
+  payment_method   String?
+  shipping_address String?
+  tracking_number  String?
+  item_count       Int        @default(0)
+  items            OrderItem[]
+  customer         Customer   @relation(fields: [customer_id], references: [id])
+}
+
+model OrderItem {
+  id          Int     @id @default(autoincrement())
+  order_id    Int
+  product_id  Int
+  product_name String
+  product_sku  String?
+  quantity    Int
+  unit_price  Decimal
+  order       Order   @relation(fields: [order_id], references: [id])
+  product     Product @relation(fields: [product_id], references: [id])
+}
+
+model Product {
+  id              Int      @id @default(autoincrement())
+  name            String
+  sku             String   @unique
+  description     String?
+  category        String
+  purchase_price  Decimal  @default(0)
+  selling_price   Decimal  @default(0)
+  stock_quantity  Int      @default(0)
+  weight_grams    Int?
+  supplier        String?
+  shipping_cost   Decimal? 
+  primary_image_url String?
+  orderItems      OrderItem[]
+}
+
+model FixedCost {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String?
+  category      String
+  amount        Decimal
+  billing_cycle BillingCycle
+  start_date    DateTime
+  end_date      DateTime?
+  is_active     Boolean  @default(true)
+}
+
+model Interaction {
+  id              Int       @id @default(autoincrement())
+  customer_id     Int
+  interaction_type InteractionType
+  subject         String
+  description     String?
+  created_at      DateTime  @default(now())
+  created_by      String?
+  customer        Customer  @relation(fields: [customer_id], references: [id])
+}
+
+enum CustomerStatus {
+  new
+  active
+  inactive
+  vip
+}
+
+enum OrderStatus {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum BillingCycle {
+  monthly
+  quarterly
+  yearly
+}
+
+enum InteractionType {
+  email
+  phone
+  chat
+  meeting
+  note
+}
